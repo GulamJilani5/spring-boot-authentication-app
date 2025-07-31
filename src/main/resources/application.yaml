@@ -1,0 +1,11 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5433/userdb
+    username: postgres
+    password: Postgr_SQL@12
+  jpa:
+    hibernate:
+      ddl-auto: update
+  jackson:
+    deserialization:
+      fail-on-unknown-properties: true

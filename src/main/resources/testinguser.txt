@@ -1,0 +1,63 @@
+User 1:
+{
+    "username":"Gulam Jilani",
+    "email": "gulamjilani@gmail.com",
+    "password": "12345",
+    "age": "30",
+    "dob": "01/10/1995"
+
+}
+
+
+User 2:
+{
+    "username":"Shabnam Naimeee",
+    "email": "shabnamnaimee@gmail.com",
+    "password": "12345",
+    "age": "29",
+    "dob": "01/01/1995"
+
+}
+
+
+User 3:
+{
+    "username":"Joen Doe",
+    "email": "johndoe@gmail.com",
+    "password": "12345",
+    "age": "40",
+    "dob": "01/01/1985"
+
+}
+
+User4:
+{
+    "username":"Adam",
+    "email": "adam@gmail.com",
+    "password": "abcde",
+    "age": "450",
+    "dob": "01/01/1975"
+
+}
+
+User 5:
+{
+    "username":"Ben",
+    "email": "ben@gmail.com",
+    "password": "abc123",
+    "age": "45",
+    "dob": "01/01/1980"
+
+}
+
+
+- Strict Validation
+application.yaml
+spring:
+  jackson:
+    deserialization:
+      fail-on-unknown-properties: true
+
+    or
+In the entity class use this annotations
+@JsonIgnoreProperties(ignoreUnknown = false)
