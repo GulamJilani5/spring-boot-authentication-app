@@ -13,6 +13,9 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticatedPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -26,8 +29,12 @@ public class UserController {
 
     private final ObjectMapper objectMapper = new ObjectMapper()
             .enable(SerializationFeature.INDENT_OUTPUT);
+
      @Autowired
     UserService userService;
+
+     @Autowired
+     AuthenticationManager authenticateManager;
 
      //Signup
      @PostMapping("/signup")
@@ -83,6 +90,8 @@ public class UserController {
                 null,
                 LocalDateTime.now()
         );
+
+
 
         // Send Response ( Using DTO-ResponseDto)
         return new ResponseEntity<>(response, HttpStatus.OK);
