@@ -11,3 +11,13 @@ spring:
   jackson:
     deserialization:
       fail-on-unknown-properties: true
+
+logging:
+  level:
+    com.example.AuthCentral: DEBUG  # Your app package for service/controller logs
+    org.springframework: DEBUG  # General Spring framework logs
+    org.springframework.web: DEBUG  # Web request handling, including deserialization
+    org.springframework.http: DEBUG  # HTTP message converters (e.g., Jackson errors)
+    com.fasterxml.jackson: DEBUG  # Jackson-specific deserialization logs
+    org.hibernate.SQL: DEBUG  # SQL queries (if error reaches DB)
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE  # SQL parameter bindings

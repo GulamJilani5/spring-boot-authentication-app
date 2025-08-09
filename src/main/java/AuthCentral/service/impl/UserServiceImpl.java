@@ -1,5 +1,6 @@
 package AuthCentral.service.impl;
 
+import AuthCentral.dto.ResponseDto;
 import AuthCentral.dto.SignupDto;
 import AuthCentral.exception.UserAlreadyExistsException;
 import AuthCentral.model.User;
@@ -7,6 +8,7 @@ import AuthCentral.repository.UserRepository;
 import AuthCentral.service.UserService;
 import AuthCentral.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +25,8 @@ public class UserServiceImpl implements UserService{
         this.userRepository = userRepository;
     }
 
+
+    // SIGNUP
     public User signup(SignupDto signupDto) throws IllegalArgumentException{
 
         String email = signupDto.getEmail();
@@ -42,11 +46,17 @@ public class UserServiceImpl implements UserService{
         user.setDOB(signupDto.getDob());
         user.setPhone(signupDto.getPhone());
 
+        try {
+            user.setRole(signupDto.getRole() != null ? User.Role.valueOf(signupDto.getRole()) : User.Role.ROLE_USER);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Invalid role: " + signupDto.getRole());
+        }
+
         // Save the user
         return userRepository.save(user);
     }
 
-
+    // LOGIN
     public User login(String email, String password){
         // System.out.println("email " +email);
 
@@ -65,4 +75,14 @@ public class UserServiceImpl implements UserService{
         return loggedInUser.get();
 
     }
+
+    // GET ALL USERS
+
+
+//    @Override
+//    public ResponseEntity<ResponseDto> getUsers() {
+//
+//
+//        return
+//    }
 }

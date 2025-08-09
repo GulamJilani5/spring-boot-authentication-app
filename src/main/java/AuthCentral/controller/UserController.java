@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -64,6 +65,8 @@ public class UserController {
              data.put("username", savedUser.getUsername());
              data.put("email", savedUser.getEmail());
              data.put("dob", savedUser.getDOB());
+             data.put("phone", savedUser.getPhone());
+             data.put("role", savedUser.getRole() != null ? savedUser.getRole().name() : "ROLE_USER"); // Convert enum to String
 
            ResponseDto<Object> response = new ResponseDto<>(
                  "success",
