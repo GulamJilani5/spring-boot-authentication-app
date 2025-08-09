@@ -1,6 +1,6 @@
 package AuthCentral.service.impl;
 
-import AuthCentral.dto.ResponseDto;
+
 import AuthCentral.dto.SignupDto;
 import AuthCentral.exception.UserAlreadyExistsException;
 import AuthCentral.model.User;

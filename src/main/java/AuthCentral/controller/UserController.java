@@ -1,8 +1,6 @@
 package AuthCentral.controller;
 
-import AuthCentral.dto.ResponseDto;
-import AuthCentral.dto.LoginDto;
-import AuthCentral.dto.SignupDto;
+import AuthCentral.dto.*;
 import AuthCentral.model.User;
 import AuthCentral.security.JwtUtils;
 import AuthCentral.service.UserService;
@@ -16,7 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.AuthenticatedPrincipal;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.*;
@@ -45,7 +42,7 @@ public class UserController {
 
      //Signup
      @PostMapping("/signup")
-    public ResponseEntity<Object> signup(@Valid @RequestBody SignupDto signupDto) throws JsonProcessingException {
+    public ResponseEntity<ApiResponse<UserDto>> signup(@Valid @RequestBody SignupDto signupDto) throws JsonProcessingException {
 
             String jsonOutput = objectMapper.writeValueAsString(signupDto);
             System.out.println("------------UserController, Signup,--------------  input: \n" + jsonOutput);
@@ -61,19 +58,28 @@ public class UserController {
               */
 
          // Build Response || Approach 2 (Using DTO - ResponseDto)
-           Map<String, String> data = new HashMap<>();
-             data.put("username", savedUser.getUsername());
-             data.put("email", savedUser.getEmail());
-             data.put("dob", savedUser.getDOB());
-             data.put("phone", savedUser.getPhone());
-             data.put("role", savedUser.getRole() != null ? savedUser.getRole().name() : "ROLE_USER"); // Convert enum to String
+         // Convert User to UserDto
+         UserDto data = new UserDto();
+         data.setUsername(savedUser.getUsername());
+         data.setEmail(savedUser.getEmail());
+         data.setDob(savedUser.getDOB());
+         data.setPhone(savedUser.getPhone());
+         data.setRole(savedUser.getRole() != null ? savedUser.getRole().name() : "ROLE_USER");
 
-           ResponseDto<Object> response = new ResponseDto<>(
-                 "success",
-                 "Sign up has done successfully!!!",
+         // Generate IDs for tracking (could integrate with real tracing later)
+         String requestId = UUID.randomUUID().toString();
+         String traceId = UUID.randomUUID().toString();
+
+         // Use i18n for success message
+         // String message = messageSource.getMessage("signup.success", null, "Sign up has done successfully!!!", locale);
+
+           // Build Response
+         ApiResponse<UserDto> response = ApiResponse.success(
                  data,
-                 LocalDateTime.now()
-           );
+                 "--------------Sign up completed successfully!",
+                 requestId,
+                 traceId
+         );
 
           // Send Response ( Using DTO-ResponseDto)
          return new ResponseEntity<>(response, HttpStatus.CREATED);
@@ -83,12 +89,14 @@ public class UserController {
     @PostMapping("/login")
      // public ResponseEntity<Map<String, String>> login(@RequestBody Map<String, String> loginBody){
     //    String email = loginBody.get("email");
-    public ResponseEntity<ResponseDto<String>> login(@RequestBody LoginDto loginBody){
+    public ResponseEntity<ApiResponse<String>> login(@RequestBody LoginDto loginBody){
 
             String email = loginBody.getEmail();
             System.out.println(".............UserController, login........... Email: " +email);
 
-         try{
+        String requestId = UUID.randomUUID().toString();
+        String traceId = UUID.randomUUID().toString();
+
              // 1. Authenticate user
              Authentication authentication = authenticateManager.authenticate(
                      new UsernamePasswordAuthenticationToken(loginBody.getEmail(), loginBody.getPassword())
@@ -98,29 +106,16 @@ public class UserController {
              String token = jwtUtils.generateToken(loginBody.getEmail());
 
              // 3. Build response
-             ResponseDto<String> response = new ResponseDto<>(
-                     "success",
-                     "Login successful",
+             ApiResponse<String> response = ApiResponse.success(
                      token,
-                     LocalDateTime.now()
+                     "Login successful",
+                     requestId,
+                     traceId
              );
 
              // 4. Send Response
             return new ResponseEntity<>(response, HttpStatus.OK);
 
-         }catch (AuthenticationException e){
-             ResponseDto<String> response = new ResponseDto<>(
-                     "error",
-                     "Invalid email or password",
-                     null,
-                     LocalDateTime.now()
-             );
-             return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
-
-         }
     }
-
-
-
 
 }
