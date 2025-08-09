@@ -19,6 +19,7 @@ public class JwtUtils {
 
 
     public String generateToken(String username){
+        System.out.println("==========JwtUtils generateToken=============");
 
         return Jwts
                 .builder()
@@ -31,6 +32,7 @@ public class JwtUtils {
     }
 
     public String extractUsername(String token){
+        System.out.println("==============JwtUtils extractUsername======================");
 
         return Jwts
                 .parserBuilder()                       // New API
@@ -42,6 +44,7 @@ public class JwtUtils {
     }
 
     public boolean validateToken(String token){
+        System.out.println("============JwtUtils validateToken===============");
 
         try{
             Jwts

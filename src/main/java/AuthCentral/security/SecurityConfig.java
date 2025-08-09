@@ -14,12 +14,13 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
-public class AppSecurity {
+public class SecurityConfig {
 
     private final MyUserDetailsService myUserDetailsService;
     private final JwtAuthFilter jwtAuthFilter;
 
-    public AppSecurity(MyUserDetailsService myUserDetailsService, JwtAuthFilter jwtAuthFilter) {
+    public SecurityConfig(MyUserDetailsService myUserDetailsService, JwtAuthFilter jwtAuthFilter) {
+        System.out.println("...........SecurityConfig initialized with JwtAuthFilter...........");
         this.myUserDetailsService = myUserDetailsService;
         this.jwtAuthFilter = jwtAuthFilter;
     }
@@ -27,6 +28,7 @@ public class AppSecurity {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        System.out.println("...........SecurityConfig SecurityFilterChain...........");
         http
                 .csrf(csrf -> csrf.disable())  // No need for CSRF in stateless APIs
                 .authorizeHttpRequests(auth -> auth
@@ -44,11 +46,13 @@ public class AppSecurity {
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder(){
+        System.out.println("...........SecurityConfig BCryptPasswordEncoder...........");
         return  new BCryptPasswordEncoder();
     }
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception{
+        System.out.println("SecurityConfig AuthenticationManager");
         return authenticationConfiguration.getAuthenticationManager();
     }
 

@@ -46,6 +46,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
             MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
 
+        System.out.println("Error:  MethodArgumentNotValidException ex");
+
        // Tracking error in the fields Using Map
         Map<String, String> validationErrors = new HashMap<>();
         List<ObjectError> validationErrorList = ex.getBindingResult().getAllErrors();
@@ -73,6 +75,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
      // public ResponseEntity<Object> handleIllegalArgumentException(IllegalArgumentException ex) {
         public ResponseEntity<ErrorResponseDto> handleIllegalArgumentException(IllegalArgumentException ex, WebRequest webRequest) {
 
+        System.out.println("Error: IllegalArgumentException.class");
         //Build Error Response || Approach 1 ( Using Map)
         /*
         Map<String, String> validationErrors = new HashMap<>();
@@ -100,12 +103,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(UserAlreadyExistsException.class)
     public ResponseEntity<Object> handleUserAlreadyExistsException(UserAlreadyExistsException ex, WebRequest webRequest) {
 
+        System.out.println("Error: UserAlreadyExistsException.class");
         ErrorResponseDto errorResponse = new ErrorResponseDto(
                 webRequest.getDescription(false),
                 HttpStatus.BAD_REQUEST,
                 ex.getMessage(),
                 LocalDateTime.now()
-
         );
 
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
@@ -113,6 +116,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> handleGenericException(Exception ex, WebRequest webRequest) {
+
+        System.out.println("Error: Exception.class");
         ErrorResponseDto errorResponse = new ErrorResponseDto(
                 webRequest.getDescription(false),
                 HttpStatus.BAD_REQUEST,

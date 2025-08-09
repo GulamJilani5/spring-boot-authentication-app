@@ -8,6 +8,7 @@ public class AuthCentralApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(AuthCentralApplication.class, args);
+		System.out.println("11111111...........main.............");
 	}
 
 }

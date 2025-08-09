@@ -4,6 +4,7 @@ import AuthCentral.dto.ResponseDto;
 import AuthCentral.dto.LoginDto;
 import AuthCentral.dto.SignupDto;
 import AuthCentral.model.User;
+import AuthCentral.security.JwtUtils;
 import AuthCentral.service.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,6 +17,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticatedPrincipal;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -36,12 +39,15 @@ public class UserController {
      @Autowired
      AuthenticationManager authenticateManager;
 
+     @Autowired
+     JwtUtils jwtUtils;
+
      //Signup
      @PostMapping("/signup")
     public ResponseEntity<Object> signup(@Valid @RequestBody SignupDto signupDto) throws JsonProcessingException {
 
             String jsonOutput = objectMapper.writeValueAsString(signupDto);
-            System.out.println("Signup input:\n" + jsonOutput);
+            System.out.println("------------UserController, Signup,--------------  input: \n" + jsonOutput);
 
             // Perform Signup
             User savedUser= userService.signup(signupDto);
@@ -76,26 +82,42 @@ public class UserController {
     //    String email = loginBody.get("email");
     public ResponseEntity<ResponseDto<String>> login(@RequestBody LoginDto loginBody){
 
-         String email = loginBody.getEmail();
-         String password = loginBody.getPassword();
-        // System.out.println("email " +email);
+            String email = loginBody.getEmail();
+            System.out.println(".............UserController, login........... Email: " +email);
 
-        // Perform Login
-         User loggedInUser =  userService.login(email, password);
+         try{
+             // 1. Authenticate user
+             Authentication authentication = authenticateManager.authenticate(
+                     new UsernamePasswordAuthenticationToken(loginBody.getEmail(), loginBody.getPassword())
+             );
 
-        // Build Response || Approach 2
-        ResponseDto<String> response = new ResponseDto<>(
-                "success",
-                "Sign up has done successfully!!!",
-                null,
-                LocalDateTime.now()
-        );
+             // 2. Generate JWT token
+             String token = jwtUtils.generateToken(loginBody.getEmail());
 
+             // 3. Build response
+             ResponseDto<String> response = new ResponseDto<>(
+                     "success",
+                     "Login successful",
+                     token,
+                     LocalDateTime.now()
+             );
 
+             // 4. Send Response
+            return new ResponseEntity<>(response, HttpStatus.OK);
 
-        // Send Response ( Using DTO-ResponseDto)
-        return new ResponseEntity<>(response, HttpStatus.OK);
+         }catch (AuthenticationException e){
+             ResponseDto<String> response = new ResponseDto<>(
+                     "error",
+                     "Invalid email or password",
+                     null,
+                     LocalDateTime.now()
+             );
+             return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
 
+         }
     }
+
+
+
 
 }

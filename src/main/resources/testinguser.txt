@@ -61,3 +61,9 @@ spring:
     or
 In the entity class use this annotations
 @JsonIgnoreProperties(ignoreUnknown = false)
+
+
+
+ "email": "mike@gmail",
+"timestamp": "2025-08-06T01:58:23.2232652"
+token: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtaWtlQGdtYWlsIiwiaWF0IjoxNzU0NDI1NzAzLCJleHAiOjE3NTQ1MTIxMDN9.EpU6pXTCpsbBQi_Zo5meOZIDXJ-o2P2x7GQfPNxohvc
